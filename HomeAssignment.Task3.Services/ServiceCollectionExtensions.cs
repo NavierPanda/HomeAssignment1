@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using HomeAssignment.Contracts;
+using HomeAssignment.Task3.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 
 [assembly:InternalsVisibleTo("HomeAssignment.Task3.Services.Tests")]
@@ -18,15 +19,18 @@ namespace HomeAssignment.Task3.Services
         public static IServiceCollection AddHashCalculation(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<IUrlValidator, UrlValidator>();
+            serviceCollection.AddSingleton<IStreamExtractor, StreamExtractor>();
+            serviceCollection.AddSingleton<ISHACalculator, SHACalculator>();
             
-            serviceCollection.AddSingleton<ISHACalculator>(
+            serviceCollection.AddSingleton<ISHACalcService>(
                 s =>
                 {
-                    var validator = s.GetRequiredService<IUrlValidator>();
+                    var streamExtractor = s.GetRequiredService<IStreamExtractor>();
+                    var urlValidator = s.GetRequiredService<IUrlValidator>();
+                    var shaCalculator = s.GetRequiredService<ISHACalculator>();
 
-                    return new SHACalculatorDecorator(
-                        new SHACalculator(validator),
-                        validator
+                    return new SHACalcServiceDecorator(
+                        new SHACalcService(urlValidator, streamExtractor, shaCalculator)
                     );
                 }
             );

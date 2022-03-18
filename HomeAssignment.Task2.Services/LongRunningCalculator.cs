@@ -7,7 +7,7 @@ namespace HomeAssignment.Task2.Services
     /// <inheritdoc />
     public class LongRunningCalculator : ILongRunningCalculator
     {
-        private const int TaskDelay = 1000;
+        private const int TaskDelay = 10;
 
         /// <inheritdoc />
         public async Task<bool> LongRunning(int inputNumberParam)

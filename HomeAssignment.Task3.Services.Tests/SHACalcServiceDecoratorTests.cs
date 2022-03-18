@@ -1,7 +1,6 @@
 ﻿using System;
 using FluentAssertions;
-using HomeAssignment.Contracts;
-using HomeAssignment.Services.Tests;
+using HomeAssignment.Task3.Contracts;
 using Moq;
 using NUnit.Framework;
 
@@ -9,31 +8,16 @@ namespace HomeAssignment.Task3.Services.Tests
 {
     public class SHACalculatorDecoratorTests
     {
-        private SHACalculatorDecorator _shaCalculatorDecorator;
-        private UrlValidatorMock _validatorMock;
-        private Mock<ISHACalculator> _shaCalculator;
+        private SHACalcServiceDecorator _shaCalculatorDecorator;
+        private Mock<ISHACalcService> _shaCalculator;
 
         [SetUp]
         public void Setup()
         {
-            _validatorMock = new UrlValidatorMock();
-            _shaCalculator = new Mock<ISHACalculator>();
-            _shaCalculatorDecorator = new SHACalculatorDecorator(_shaCalculator.Object , _validatorMock.Object);
+            _shaCalculator = new Mock<ISHACalcService>();
+            _shaCalculatorDecorator = new SHACalcServiceDecorator(_shaCalculator.Object);
         }
-        
-        [Test]
-        public void When_InvalidUrl_Throws()
-        {
-            var invalidUrl = "someInvalidUrl";
-            _validatorMock.MakeFileUrlInvalid(invalidUrl);
 
-            var exception = Assert.Throws<ArgumentException>(
-                () =>  _shaCalculatorDecorator.Calc(invalidUrl)
-            );
-            exception.Should().NotBeNull();
-            exception.Message.Should().Be(SHACalculator.InvalidFileUrlPassed);
-        }
-        
         [Test]
         public void When_ShaCalcFails_Throws()
         {

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.IO;
 using FluentAssertions;
-using HomeAssignment.Services.Tests;
 using NUnit.Framework;
 
 namespace HomeAssignment.Task3.Services.Tests
@@ -8,41 +8,44 @@ namespace HomeAssignment.Task3.Services.Tests
     public class SHACalculatorTests
     {
         private SHACalculator _shaCalculator;
-        private UrlValidatorMock _validatorMock;
 
         [SetUp]
         public void Setup()
         {
-            _validatorMock = new UrlValidatorMock();
-            _shaCalculator = new SHACalculator(_validatorMock.Object);
+            _shaCalculator = new SHACalculator();
         }
 
         [Test]
-        public void When_InvalidData_Throws()
+        public void When_BadStream_Throws()
         {
-            var invalidUrl = "someInvalidUrl";
-            _validatorMock.MakeFileUrlInvalid(invalidUrl);
+            var fileStream = File.Open("./someFile.txt", FileMode.Open);
+            fileStream.Close();
 
             var exception = Assert.Throws<ArgumentException>(
-                () => _shaCalculator.Calc(invalidUrl)
+                () => _shaCalculator.Calc(fileStream)
             );
             exception.Should().NotBeNull();
-            exception.Message.Should().Be(SHACalculator.InvalidFileUrlPassed);
+            exception.Message.Should().Contain(SHACalculator.UnreadableStream);
         }
         
         [Test]
         public void When_LocalFile_ReturnsExpectedHash()
         {
-            var actualHashString = _shaCalculator.Calc("./someFile.txt");
+            using var fileStream = File.Open("./someFile.txt", FileMode.Open);
+            var actualHashString = _shaCalculator.Calc(fileStream);
             var expectedHashString = "35-6A-19-2B-79-13-B0-4C-54-57-4D-18-C2-8D-46-E6-39-54-28-AB";
             actualHashString.Should().Be(expectedHashString);
         }
 
         [Test]
-        [TestCase("https://speed.hetzner.de/100MB.bin", "2C-2C-EC-CB-5E-C5-57-4F-79-1D-45-B6-3C-94-0C-FF-20-55-0F-9A")]
-        public void When_RealUrl_ReturnsExpectedHash(string fileUrl, string hashString)
+        [Ignore("Works fine, but 2 minutes")]
+        public void When_RealUrl_ReturnsExpectedHash()
         {
-            var actualHashString = _shaCalculator.Calc(fileUrl);
+            string fileUrl = "https://speed.hetzner.de/100MB.bin";
+            string hashString = "2C-2C-EC-CB-5E-C5-57-4F-79-1D-45-B6-3C-94-0C-FF-20-55-0F-9A";
+            var req = System.Net.WebRequest.Create(fileUrl);
+            using var stream = req.GetResponse().GetResponseStream();
+            var actualHashString = _shaCalculator.Calc(stream);
             actualHashString.Should().Be(hashString);
         }
     }
