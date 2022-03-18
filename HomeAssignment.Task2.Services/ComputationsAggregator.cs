@@ -23,17 +23,14 @@ namespace HomeAssignment.Task2.Services
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            await Task.WhenAll(GetCalculationInput().Select(o => _longRunningCalculator.LongRunning(o)));
+            await Task.WhenAll(GetCalculationInput().Select(o => _longRunningCalculator.LongRunning(o)).ToArray());
             stopWatch.Stop();
             return stopWatch.Elapsed;
         }
 
         private IEnumerable<int> GetCalculationInput()
         {
-            for (int i = 0; i < NumberOfIterations; i++)
-            {
-                yield return i;
-            }
+            return Enumerable.Range(0, NumberOfIterations);
         }
     }
 }
