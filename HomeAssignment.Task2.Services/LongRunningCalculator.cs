@@ -7,12 +7,10 @@ namespace HomeAssignment.Task2.Services
     /// <inheritdoc />
     public class LongRunningCalculator : ILongRunningCalculator
     {
-        private static readonly TimeSpan TaskDelay = new TimeSpan(0, 0, 0, 0, 1);
-
         /// <inheritdoc />
-        public async Task<bool> LongRunning(int inputNumberParam)
+        public async Task<bool> LongRunning(int inputNumberParam, TimeSpan timeSpanDelay)
         {
-            await Task.Delay(TaskDelay);
+            await Task.Delay(timeSpanDelay);
             return true;
         }
     }

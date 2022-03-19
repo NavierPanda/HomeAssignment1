@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace HomeAssignment.Task2.Contracts
 {
@@ -11,6 +12,7 @@ namespace HomeAssignment.Task2.Contracts
         /// Some long running method
         /// </summary>
         /// <param name="inputNumberParam">input parametr</param>
-        Task<bool> LongRunning(int inputNumberParam);
+        /// <param name="timeSpanDelay">how long operation will evaluate</param>
+        Task<bool> LongRunning(int inputNumberParam, TimeSpan timeSpanDelay);
     }
 }

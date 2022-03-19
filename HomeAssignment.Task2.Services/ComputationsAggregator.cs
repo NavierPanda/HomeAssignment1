@@ -11,7 +11,6 @@ namespace HomeAssignment.Task2.Services
     public class ComputationsAggregator : IComputationsAggregator
     {
         private readonly ILongRunningCalculator _longRunningCalculator;
-        private const int NumberOfIterations = 1000;
 
         public ComputationsAggregator(ILongRunningCalculator longRunningCalculator)
         {
@@ -19,18 +18,20 @@ namespace HomeAssignment.Task2.Services
         }
 
         /// <inheritdoc />
-        public async Task<TimeSpan> BuildAggregatedRecord()
+        public async Task<TimeSpan> BuildAggregatedRecord(int numberOfIterations = IterationsConstansts.NumberOfIterations, 
+            int msDelay = IterationsConstansts.DelayInMiliseconds)
         {
+            TimeSpan taskDelay = new TimeSpan(0, 0, 0, 0, msDelay);
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            await Task.WhenAll(GetCalculationInput().Select(o => _longRunningCalculator.LongRunning(o)).ToArray());
+            await Task.WhenAll(GetCalculationInput(numberOfIterations).Select(o => _longRunningCalculator.LongRunning(o, taskDelay)).ToArray());
             stopWatch.Stop();
             return stopWatch.Elapsed;
         }
 
-        private IEnumerable<int> GetCalculationInput()
+        private IEnumerable<int> GetCalculationInput(int numberOfIterations)
         {
-            return Enumerable.Range(0, NumberOfIterations);
+            return Enumerable.Range(0, numberOfIterations);
         }
     }
 }

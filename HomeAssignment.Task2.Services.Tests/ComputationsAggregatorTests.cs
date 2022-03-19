@@ -23,11 +23,11 @@ namespace HomeAssignment.Task2.Services.Tests
         public void When_TwoIterationsThrowsExceptions_ThrowsAggregateException()
         {
             var firstException = new ArgumentException();
-            _longRunningCalculator.Setup(o => o.LongRunning(10))
+            _longRunningCalculator.Setup(o => o.LongRunning(10, It.IsAny<TimeSpan>()))
                 .Throws(() => firstException);
                 
             var secondException = new InvalidOperationException();
-            _longRunningCalculator.Setup(o => o.LongRunning(20))
+            _longRunningCalculator.Setup(o => o.LongRunning(20, It.IsAny<TimeSpan>()))
                 .Throws(() => secondException);
 
             var firstExceptionOnly = Assert.ThrowsAsync<ArgumentException>(
@@ -40,9 +40,9 @@ namespace HomeAssignment.Task2.Services.Tests
         [TestCase(100, "00:00:00.20")]
         [TestCase(1000, "00:00:02")]
         [TestCase(10000, "00:00:20")]
-        public async Task When_EverIterationLasts10Seconds_LastsShorter(int taskDelay, TimeSpan noMoreTime)
+        public async Task When_EveryIterationLasts_TotalTimeLessThan(int taskDelay, TimeSpan noMoreTime)
         {
-            _longRunningCalculator.Setup(o => o.LongRunning(It.IsAny<int>()))
+            _longRunningCalculator.Setup(o => o.LongRunning(It.IsAny<int>(), It.IsAny<TimeSpan>()))
                 .Returns(() => Task.Delay(taskDelay).ContinueWith(task => true));
             var realTime = await _calculationAggregator.BuildAggregatedRecord();
             realTime.Should().BeLessOrEqualTo(noMoreTime);
