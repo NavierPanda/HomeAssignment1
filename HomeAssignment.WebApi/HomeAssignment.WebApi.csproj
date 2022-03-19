@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.23" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
         <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="5.4.1" />
@@ -17,6 +18,7 @@
       <ProjectReference Include="..\HomeAssignment.Task3.Services\HomeAssignment.Task3.Services.csproj" />
       <ProjectReference Include="..\HomeAssignment.Task4.Contracts\HomeAssignment.Task4.Contracts.csproj" />
       <ProjectReference Include="..\HomeAssignment.Task4.Services\HomeAssignment.Task4.Services.csproj" />
+      <ProjectReference Include="..\HomeAssignment.WebApi.Contracts\HomeAssignment.WebApi.Contracts.csproj" />
     </ItemGroup>
 
 

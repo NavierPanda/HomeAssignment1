@@ -2,6 +2,9 @@
 
 namespace HomeAssignment.WebApi.Options
 {
+    /// <summary>
+    /// Options of string inverter
+    /// </summary>
     public class StaticStringResourcesOptions
     {
         public const string ConfigSectionKey = "StaticStringResources";

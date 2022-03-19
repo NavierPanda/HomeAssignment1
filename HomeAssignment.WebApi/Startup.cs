@@ -1,7 +1,9 @@
 using HomeAssignment.Task1.Services;
 using HomeAssignment.Task2.Services;
 using HomeAssignment.Task3.Services;
+using HomeAssignment.Task4.Contracts;
 using HomeAssignment.Task4.Services;
+using HomeAssignment.WebApi.Middlewares;
 using HomeAssignment.WebApi.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,9 +27,14 @@ namespace HomeAssignment.WebApi
         {
             services.AddControllers()
                 .AddNewtonsoftJson();
-            
+
+            services.AddOptions();
+
             services.Configure<StaticStringResourcesOptions>(
                 Configuration.GetSection(StaticStringResourcesOptions.ConfigSectionKey));
+            services.Configure<BlocktapWebApiOptions>(
+                Configuration.GetSection(BlocktapWebApiOptions.ConfigSectionKey));
+            
             
             services.AddSwaggerGen();
             services.AddSwaggerGenNewtonsoftSupport();
@@ -42,7 +49,7 @@ namespace HomeAssignment.WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -52,7 +59,9 @@ namespace HomeAssignment.WebApi
             app.UseSwagger();
             
             app.UseSwaggerUI();
-
+            
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
+            
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
 
