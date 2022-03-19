@@ -9,11 +9,12 @@ using Microsoft.Extensions.Options;
 
 namespace HomeAssignment.Task4.Services
 {
+    /// <inheritdoc />
     internal class MarketsRepository : BaseGraphQlRepository, IMarketsRepository
     {
         private string Query (string someSymbol) => @$"
 query price {{
-  markets(filter: {{baseSymbol: {{_eq: ""{someSymbol}""}}, quoteSymbol: {{_eq: ""EUR""}}, exchangeSymbol: {{_eq: ""Binance""}}}}) {{
+  markets(filter: {{baseSymbol: {{_eq: ""{someSymbol}""}}, quoteSymbol: {{_eq: ""EUR""}}}}) {{
         marketSymbol
             ticker {{
                 lastPrice
@@ -27,10 +28,12 @@ query price {{
         {
         }
 
+        /// <inheritdoc />
         public async Task<IReadOnlyDictionary<string, CollectionMarketType>> GetMarketsByAssetsSymbolCollection(
             IEnumerable<string> assetSymbolsCollection)
         {
             var tasksIterator = assetSymbolsCollection
+                .Distinct()
                 .ToDictionary(o=> o, MarketsByAssetsSymbol);
             await Task.WhenAll(tasksIterator.Values);
             
@@ -41,7 +44,7 @@ query price {{
         {
             var getAllAvailableAssetsRequest = new GraphQLRequest
             {
-                Query = Query(singleAssetSymbol),
+                Query = Query(singleAssetSymbol)
             };
             
             return GetResultsFromQuery<CollectionMarketType>(getAllAvailableAssetsRequest);

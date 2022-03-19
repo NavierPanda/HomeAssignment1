@@ -6,6 +6,9 @@ using GraphQL.Client.Serializer.Newtonsoft;
 
 namespace HomeAssignment.Task4.Services
 {
+    /// <summary>
+    /// GraphQl based data sources
+    /// </summary>
     internal class BaseGraphQlRepository
     {
         private readonly string _baseUrl;
@@ -17,6 +20,11 @@ namespace HomeAssignment.Task4.Services
             _jsonSerializer = new NewtonsoftJsonSerializer();
         }
 
+        /// <summary>
+        /// Evaluate single graphQl query
+        /// </summary>
+        /// <param name="requestedQuery">request query</param>
+        /// <typeparam name="TResponse">Response type</typeparam>
         protected async Task<TResponse> GetResultsFromQuery<TResponse>(GraphQLRequest requestedQuery)
         {
             using var graphQlClient = new GraphQLHttpClient(_baseUrl, _jsonSerializer);

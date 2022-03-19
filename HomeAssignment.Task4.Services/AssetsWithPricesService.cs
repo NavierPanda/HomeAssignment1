@@ -27,17 +27,23 @@ namespace HomeAssignment.Task4.Services
                 throw new ArgumentException("Zero or negative batchSize", nameof(batchSize));
             if (limit <= 0)
                 throw new ArgumentException("Zero or negative limit", nameof(batchSize));
-                
-            
+
             var allAvailableAssets = await _assetsRepository.GetAllAvailableAssets();
 
             var assetsWithPricesCollection = new List<AssetsWithPrices>();
-            
-            var batchesCount = limit / batchSize;
-            
-            for (int i = 0; i < batchesCount; i++)
+
+            var currentlyAdded = 0;
+
+            while (currentlyAdded < limit)
             {
-                var assetsBatch = allAvailableAssets.Assets.Skip(i * batchSize).Take(batchSize)
+                var requiredToAdd = limit - currentlyAdded;
+                var actuallyLeft = allAvailableAssets.Count - currentlyAdded;
+                if (actuallyLeft == 0)
+                    break;
+
+                var goingToAdd = Math.Min(Math.Min(requiredToAdd, batchSize), actuallyLeft);
+                var assetsBatch = allAvailableAssets.Skip(currentlyAdded).Take(
+                        goingToAdd)
                     .ToArray();
                 var markets = await _marketsRepository
                     .GetMarketsByAssetsSymbolCollection(assetsBatch.Select(o => o.AssetSymbol));
@@ -45,20 +51,18 @@ namespace HomeAssignment.Task4.Services
                 IEnumerable<AssetsWithPrices> joinedDataQuery =
                     from a in assetsBatch
                     join m in markets on a.AssetSymbol equals m.Key
-                        into am
-                    from p in am.DefaultIfEmpty()
-                    select new AssetsWithPrices { 
-                        Asset = a, 
-                        Markets = p.Equals(default(KeyValuePair<string,CollectionMarketType>)) 
-                            ? Array.Empty<MarketType>().ToList() 
-                            : p.Value.Markets 
+                    select new AssetsWithPrices
+                    {
+                        Asset = a,
+                        Markets = m.Value.Markets
                     };
-                
-                assetsWithPricesCollection.AddRange(joinedDataQuery.ToList());
+
+                assetsWithPricesCollection.AddRange(joinedDataQuery.ToArray());
+                currentlyAdded = assetsWithPricesCollection.Count;
             }
 
-            return assetsWithPricesCollection;
 
+            return assetsWithPricesCollection;
         }
     }
 }

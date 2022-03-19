@@ -5,7 +5,7 @@ using HomeAssignment.Task4.Contracts.DTO;
 namespace HomeAssignment.Task4.Contracts
 {
     /// <summary>
-    /// Get Markets records data 
+    /// Markets data source 
     /// </summary>
     public interface IMarketsRepository
     {
@@ -13,7 +13,7 @@ namespace HomeAssignment.Task4.Contracts
         /// Get Markets values By assets symbols collection
         /// </summary>
         /// <param name="assetSymbolsCollection"></param>
-        Task<IReadOnlyDictionary<string ,CollectionMarketType>> GetMarketsByAssetsSymbolCollection(
+        Task<IReadOnlyDictionary<string, CollectionMarketType>> GetMarketsByAssetsSymbolCollection(
             IEnumerable<string> assetSymbolsCollection
         );
     }

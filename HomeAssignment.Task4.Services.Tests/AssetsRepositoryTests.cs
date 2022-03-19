@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using FluentAssertions;
 using GraphQL.Client.Http;
 using HomeAssignment.Task4.Contracts;
@@ -34,15 +33,14 @@ namespace HomeAssignment.Task4.Services.Tests
             _assetsRepository = new AssetsRepository(someOptions);
             
             var exception = Assert.ThrowsAsync<GraphQLHttpRequestException>( async () => await _assetsRepository.GetAllAvailableAssets());
-            
+            exception.Should().NotBeNull();
         }
 
         [Test]
         public async Task When_BaseUrlIsRight_GetAllAvailableAssets()
         {
             var allAvailableAssets = await _assetsRepository.GetAllAvailableAssets();
-            allAvailableAssets.Should().NotBeNull();
-            allAvailableAssets.Assets.Should().NotBeNull()
+            allAvailableAssets.Should().NotBeNull()
                 .And.NotBeEmpty()
                 .And.NotContainNulls();
         }

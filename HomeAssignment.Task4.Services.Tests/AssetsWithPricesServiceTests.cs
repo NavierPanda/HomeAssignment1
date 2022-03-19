@@ -1,65 +1,171 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
-using GraphQL.Client.Http;
 using HomeAssignment.Task4.Contracts;
-using Microsoft.Extensions.Options;
+using HomeAssignment.Task4.Contracts.DTO;
+using Moq;
 using NUnit.Framework;
 
 namespace HomeAssignment.Task4.Services.Tests
 {
     public class AssetsWithPricesServiceTests
     {
-        private MarketsRepository _marketsRepository;
+        private Mock<IAssetsRepository> _assetsRepositoryMock;
 
-        private IEnumerable<string> _assetsBatch = new[]
+        private IEnumerable<AssetsType> _assetsBatch = new AssetsType[]
         {
-            "BTC",
-            "ETH",
-            "USDT"
+            new AssetsType
+            {
+                AssetName = "Bitcoin",
+                AssetSymbol = "BTC",
+                MarketCap = 793087584578
+            },
+            new AssetsType
+            {
+                AssetName = "Ethereum",
+                AssetSymbol = "ETH",
+                MarketCap = 354266866531
+            },
+            new AssetsType
+            {
+                AssetName = "USD Tether",
+                AssetSymbol = "USDT",
+                MarketCap = 80456921164
+            },
+            new AssetsType
+            {
+                AssetName = "Binance Coin",
+                AssetSymbol = "BNB",
+                MarketCap = 65892522203
+            },
+            new AssetsType
+            {
+                AssetName =  "USD Coin",
+                AssetSymbol = "USDC",
+                MarketCap = 52854825624
+            },
+            new AssetsType
+            {
+                AssetName = "Ripple",
+                AssetSymbol = "XRP",
+                MarketCap = 38305952541
+            }
         };
 
         [SetUp]
         public void Setup()
         {
-            var someOptions = Options.Create(new BlocktapWebApiOptions
-            {
-                BaseUrl = "https://api.blocktap.io/graphql"
-            });
-
-            _marketsRepository = new MarketsRepository(someOptions);
-        }
-        
-        [Test]
-        public void When_WrongUrl_GetAllAvailableAssets_Throws()
-        {
-            var someOptions = Options.Create(new BlocktapWebApiOptions
-            {
-                BaseUrl = "https://api.blocktap.io/graphql1111"
-            });
-
-            _marketsRepository = new MarketsRepository(someOptions);
-            
-            var exception = Assert.ThrowsAsync<GraphQLHttpRequestException>( async () => await _marketsRepository
-                .GetMarketsByAssetsSymbolCollection(_assetsBatch));
-            
+            _assetsRepositoryMock = new Mock<IAssetsRepository>();
+            _assetsRepositoryMock.Setup(o => o.GetAllAvailableAssets())
+                .ReturnsAsync(new List<AssetsType>());
         }
 
         [Test]
-        public async Task When_BaseUrlIsRight_GetAllAvailableAssets()
+        public async Task When_NoAllAvailableAssets_ReturnsEmpty()
         {
-            var marketTypesDictionary = await _marketsRepository
-                .GetMarketsByAssetsSymbolCollection(_assetsBatch);
+            var marketsRepositoryMock = new Mock<IMarketsRepository>();
             
-            marketTypesDictionary.Should().NotBeNull()
-                .And.NotBeEmpty();
+            var assetsWithPricesService = new AssetsWithPricesService(
+                _assetsRepositoryMock.Object,
+                marketsRepositoryMock.Object
+            );
+            
+            var dataRecords = await assetsWithPricesService
+                .GetAssetsWithPrices(100, 20);
+            dataRecords.Should().NotBeNull()
+                .And.BeEmpty();
+        }
 
-            foreach (var assetSymbol in _assetsBatch)
-            {
-                marketTypesDictionary.Should().ContainKey(assetSymbol);
-                marketTypesDictionary[assetSymbol]
-                    .Markets.Should().NotBeNull();
-            }
+        [Test]
+        [TestCase(1, 0)]
+        [TestCase(0, 1)]
+        [TestCase(0, 0)]
+        [TestCase(-1, 10)]
+        [TestCase(10, -1)]
+        [TestCase(-10, -1)]
+        public void When_InvalidParams_Throws(int limit, int batchSize)
+        {
+            var marketsRepositoryMock = new Mock<IMarketsRepository>();
+            
+            var assetsWithPricesService = new AssetsWithPricesService(
+                _assetsRepositoryMock.Object,
+                marketsRepositoryMock.Object
+            );
+            
+            var exception = Assert.ThrowsAsync<ArgumentException>(
+                async () => await assetsWithPricesService.GetAssetsWithPrices(limit, batchSize)
+            );
+            exception.Should().NotBeNull();
+        }
+
+        [Test]
+        public async Task When_NotEnoughData_ReturnsLessThanLimit()
+        {
+            var assetsAvailable = 3;
+            var limit = 4;
+            var batchSize = 2;
+            
+            var assetsList = _assetsBatch.Take(assetsAvailable).ToList();
+            
+            _assetsRepositoryMock.Setup(o => o.GetAllAvailableAssets())
+                .ReturnsAsync(() => assetsList);
+
+            var preparedMock = new MarketsRepositoryMockBuilder()
+                .WithFilledMarketsForSymbol(assetsList[0].AssetSymbol)
+                .WithEmptyMarketsForSymbol(assetsList[1].AssetSymbol)
+                .WithFilledMarketsForSymbol(assetsList[2].AssetSymbol)
+                .BuildMock();
+
+            var assetsWithPricesService = new AssetsWithPricesService(
+                _assetsRepositoryMock.Object,
+                preparedMock.Object
+            );
+            
+            var assetsWithPrices = await assetsWithPricesService
+                .GetAssetsWithPrices(limit, batchSize);
+
+            assetsWithPrices.Should().NotBeNull()
+                .And.NotBeEmpty()
+                .And.HaveCount(assetsAvailable);
+
+        }
+
+        [Test]
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        public async Task When_EnoughData_ReturnsNoMoreThanLimit(int batchSize)
+        {
+            var assetsAvailable = 5;
+            var limit = 4;
+
+            var assetsList = _assetsBatch.Take(assetsAvailable).ToList();
+            
+            _assetsRepositoryMock.Setup(o => o.GetAllAvailableAssets())
+                .ReturnsAsync(() => assetsList);
+
+            var preparedMock = new MarketsRepositoryMockBuilder()
+                .WithFilledMarketsForSymbol(assetsList[0].AssetSymbol)
+                .WithEmptyMarketsForSymbol(assetsList[1].AssetSymbol)
+                .WithFilledMarketsForSymbol(assetsList[2].AssetSymbol)
+                .WithFilledMarketsForSymbol(assetsList[3].AssetSymbol)
+                .WithEmptyMarketsForSymbol(assetsList[4].AssetSymbol)
+                .BuildMock();
+
+            var assetsWithPricesService = new AssetsWithPricesService(
+                _assetsRepositoryMock.Object,
+                preparedMock.Object
+            );
+            
+            var assetsWithPrices = await assetsWithPricesService
+                .GetAssetsWithPrices(limit, batchSize);
+
+            assetsWithPrices.Should().NotBeNull()
+                .And.NotBeEmpty()
+                .And.HaveCount(limit);
+
         }
     }
 }
