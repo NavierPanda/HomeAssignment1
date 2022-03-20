@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.Reflection;
 using HomeAssignment.Task1.Services;
 using HomeAssignment.Task2.Services;
 using HomeAssignment.Task3.Services;
@@ -10,6 +13,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace HomeAssignment.WebApi
 {
@@ -35,8 +39,17 @@ namespace HomeAssignment.WebApi
             services.Configure<BlocktapWebApiOptions>(
                 Configuration.GetSection(BlocktapWebApiOptions.ConfigSectionKey));
             
-            
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(
+                config =>
+                {
+                    config.IncludeXmlComments(XmlCommentsFilePath);
+
+                    config.SwaggerDoc("v1", new OpenApiInfo
+                    {
+                        Title = "Home Assignment", Version = "v1"
+                    });
+                }
+            );
             services.AddSwaggerGenNewtonsoftSupport();
 
             AddBusinessServices(services);
@@ -49,19 +62,22 @@ namespace HomeAssignment.WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthorization();
-            
+
             app.UseSwagger();
-            
-            app.UseSwaggerUI();
-            
+
+            app.UseSwaggerUI(
+                config => { config.SwaggerEndpoint("/swagger/v1/swagger.json", 
+                    "Home Assignment Api"); }
+            );
+
             app.UseMiddleware<ExceptionHandlerMiddleware>();
-            
+
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
 
@@ -71,6 +87,15 @@ namespace HomeAssignment.WebApi
             services.AddLongRunningComputations();
             services.AddHashCalculation();
             services.AddDataProviders();
+        }
+        
+        static string XmlCommentsFilePath
+        {
+            get
+            {
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                return Path.Combine(AppContext.BaseDirectory, xmlFilename);
+            }
         }
     }
 }

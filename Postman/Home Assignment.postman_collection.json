@@ -1,0 +1,226 @@
+{
+	"info": {
+		"_postman_id": "ec3225c9-3314-4aba-87ef-93b0f6b94b1d",
+		"name": "Home Assignment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Task1 Invert text NoData",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{port}}/InvertText?howToDo=1",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"InvertText"
+					],
+					"query": [
+						{
+							"key": "howToDo",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task1 Invert text Chars",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{port}}/InvertText",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"InvertText"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task2 Calc",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{port}}/Calculation",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"Calculation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task2 Calc iterations",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{port}}/Calculation?numberOfIterations=2000",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"Calculation"
+					],
+					"query": [
+						{
+							"key": "numberOfIterations",
+							"value": "2000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task2 Calc Delay",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{port}}/Calculation?msDelay=10",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"Calculation"
+					],
+					"query": [
+						{
+							"key": "msDelay",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task2 Calc Both",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{port}}/Calculation?numberOfIterations=2000&msDelay=100",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"Calculation"
+					],
+					"query": [
+						{
+							"key": "numberOfIterations",
+							"value": "2000"
+						},
+						{
+							"key": "msDelay",
+							"value": "100"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task3 Sha calc",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{port}}/SHACalc?fileUrl=https://speed.hetzner.de/100MB.bin",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"SHACalc"
+					],
+					"query": [
+						{
+							"key": "fileUrl",
+							"value": "https://speed.hetzner.de/100MB.bin"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task3 Sha calc predefined",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{port}}/SHACalc/predefined?fileUrlEnum=1",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"SHACalc",
+						"predefined"
+					],
+					"query": [
+						{
+							"key": "fileUrlEnum",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task4 AssetsWithPrices",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{port}}/AssetsWithPrices",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"AssetsWithPrices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Task4 AssetsWithPrices Only 10",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}{{port}}/AssetsWithPrices?limit=10",
+					"host": [
+						"{{host}}{{port}}"
+					],
+					"path": [
+						"AssetsWithPrices"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
