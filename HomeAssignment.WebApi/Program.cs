@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
+#pragma warning disable 1591
 namespace HomeAssignment.WebApi
 {
     public class Program
@@ -15,3 +16,4 @@ namespace HomeAssignment.WebApi
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }
 }
+#pragma warning restore 1591

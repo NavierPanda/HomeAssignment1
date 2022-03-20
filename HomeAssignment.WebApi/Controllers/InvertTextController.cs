@@ -6,6 +6,9 @@ using Microsoft.Extensions.Options;
 
 namespace HomeAssignment.WebApi.Controllers
 {
+    /// <summary>
+    /// Text inversion methods
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     [ProducesResponseType(400, Type = typeof(string))]
@@ -15,6 +18,9 @@ namespace HomeAssignment.WebApi.Controllers
         private readonly StaticStringResourcesOptions _options;
         private readonly ITextInverterService _textInverterService;
 
+        /// <summary>
+        /// ctor
+        /// </summary>
         public InvertTextController(
             IOptions<StaticStringResourcesOptions> options, 
             ITextInverterService textInverterService)
@@ -23,8 +29,13 @@ namespace HomeAssignment.WebApi.Controllers
             _textInverterService = textInverterService;
         }
 
+        /// <summary>
+        /// Get Inverted string with desired algorithm
+        /// </summary>
+        /// <param name="howToDo">ReverseAlgorithmEnum how to invert string</param>
+        /// <param name="originalString">You may input your string here. If not passed uses string from options</param>
+        /// <returns>inverted string</returns>
         [HttpGet]
-        // here we can enlist all error codes
         [ProducesResponseType(200, Type = typeof(string))]
         public IActionResult Get(ReverseAlgorithmEnum howToDo, string originalString = null)
         {

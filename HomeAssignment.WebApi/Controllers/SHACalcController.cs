@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeAssignment.WebApi.Controllers
 {
+    /// <summary>
+    /// Sha calculation
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     [ProducesResponseType(400, Type = typeof(string))]
@@ -22,11 +25,19 @@ namespace HomeAssignment.WebApi.Controllers
                 {PredefinedFileUrlEnum.File10Gb, "https://speed.hetzner.de/10GB.bin"}
             };
 
+        /// <summary>
+        /// ctor
+        /// </summary>
         public SHACalcController(ISHACalcService calcService)
         {
             _calcService = calcService;
         }
 
+        /// <summary>
+        /// Calculate sha hash from file url
+        /// </summary>
+        /// <param name="fileUrl"></param>
+        /// <returns>hash</returns>
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(string))]
         public ActionResult Get(string fileUrl = null)
@@ -38,6 +49,11 @@ namespace HomeAssignment.WebApi.Controllers
             return Ok(hashResult);
         }
 
+        /// <summary>
+        /// Calculate sha hash from predefined file urls from application settings
+        /// </summary>
+        /// <param name="fileUrlEnum"></param>
+        /// <returns>hash</returns>
         [HttpGet]
         [Route("predefined")]
         [ProducesResponseType(200, Type = typeof(string))]

@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomeAssignment.WebApi.Controllers
 {
+    /// <summary>
+    /// Long running calculations
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     [ProducesResponseType(400, Type = typeof(string))]
@@ -13,13 +16,21 @@ namespace HomeAssignment.WebApi.Controllers
     {
         private readonly IComputationsAggregator _computationsAggregator;
 
+        /// <summary>
+        /// ctor
+        /// </summary>
         public CalculationController(IComputationsAggregator computationsAggregator)
         {
             _computationsAggregator = computationsAggregator;
         }
 
+        /// <summary>
+        /// Evaluate bunch of long running tasks to evaluate
+        /// </summary>
+        /// <param name="numberOfIterations">how many iterations to run</param>
+        /// <param name="msDelay">one iteration task delay</param>
+        /// <returns>TimeSpan spent</returns>
         [HttpPost]
-        // here we can enlist all error codes
         [ProducesResponseType(200, Type = typeof(TimeSpan))]
         public async Task<IActionResult> Calc(int? numberOfIterations = null, int? msDelay = null)
         {

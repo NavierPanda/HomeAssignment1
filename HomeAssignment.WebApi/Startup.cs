@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
+#pragma warning disable 1591
 namespace HomeAssignment.WebApi
 {
     public class Startup
@@ -99,3 +100,4 @@ namespace HomeAssignment.WebApi
         }
     }
 }
+#pragma warning restore 1591
