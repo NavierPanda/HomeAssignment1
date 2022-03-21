@@ -11,7 +11,7 @@ namespace HomeAssignment.Task2.Contracts
         /// <summary>
         /// Calculate and return evaluation time
         /// </summary>
-        Task<TimeSpan> BuildAggregatedRecord(int numberOfIterations = IterationsConstansts.NumberOfIterations,
-            int msDelay = IterationsConstansts.DelayInMiliseconds);
+        Task<TimeSpan> BuildAggregatedRecord(int numberOfIterations = IterationsConstants.NumberOfIterations,
+            int msDelay = IterationsConstants.DelayInMilliseconds);
     }
 }

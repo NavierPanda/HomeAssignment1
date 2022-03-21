@@ -18,10 +18,10 @@ namespace HomeAssignment.Task2.Services
         }
 
         /// <inheritdoc />
-        public async Task<TimeSpan> BuildAggregatedRecord(int numberOfIterations = IterationsConstansts.NumberOfIterations, 
-            int msDelay = IterationsConstansts.DelayInMiliseconds)
+        public async Task<TimeSpan> BuildAggregatedRecord(int numberOfIterations = IterationsConstants.NumberOfIterations, 
+            int msDelay = IterationsConstants.DelayInMilliseconds)
         {
-            TimeSpan taskDelay = new TimeSpan(0, 0, 0, 0, msDelay);
+            TimeSpan taskDelay = TimeSpan.FromMilliseconds(msDelay);
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             await Task.WhenAll(GetCalculationInput(numberOfIterations).Select(o => _longRunningCalculator.LongRunning(o, taskDelay)).ToArray());

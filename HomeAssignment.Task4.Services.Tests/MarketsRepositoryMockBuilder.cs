@@ -87,7 +87,7 @@ namespace HomeAssignment.Task4.Services.Tests
                 },
                 new MarketType
                 {
-                    MarketSymbol = $"Binance:{assetSymbol}/EUR",
+                    MarketSymbol = $"BinanceJe:{assetSymbol}/EUR",
                     Ticker = null
                 },
                 new MarketType

@@ -3,7 +3,7 @@ namespace HomeAssignment.Task2.Contracts
     /// <summary>
     /// Constants sources for long running computations
     /// </summary>
-    public static class IterationsConstansts
+    public static class IterationsConstants
     {
         /// <summary>
         /// Default number of iterations
@@ -13,6 +13,6 @@ namespace HomeAssignment.Task2.Contracts
         /// <summary>
         /// Default calculation delay of method
         /// </summary>
-        public const int DelayInMiliseconds = 1;
+        public const int DelayInMilliseconds = 1;
     }
 }

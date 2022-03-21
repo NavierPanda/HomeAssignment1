@@ -57,11 +57,14 @@ namespace HomeAssignment.Task3.Services.Tests
             exception.Should().NotBeNull();
             exception.Message.Should().Be("SomeThing bad happened");
             
+            _shaCalculator.Setup(o => o.Calc(It.IsAny<string>()))
+                .Throws(new Exception("Another bad happened"));
+            
             exception = Assert.Throws<Exception>(
                 () =>  _shaCalculatorDecorator.Calc(someValidUrl)
             );
             exception.Should().NotBeNull();
-            exception.Message.Should().Be("SomeThing bad happened");
+            exception.Message.Should().Be("Another bad happened");
         }
     }
 }

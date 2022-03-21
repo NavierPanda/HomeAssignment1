@@ -101,12 +101,14 @@ namespace HomeAssignment.Task4.Services.Tests
         }
 
         [Test]
-        public async Task When_NotEnoughData_ReturnsLessThanLimit()
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        public async Task When_NotEnoughData_ReturnsLessThanLimit(int batchSize)
         {
             var assetsAvailable = 3;
             var limit = 4;
-            var batchSize = 2;
-            
+
             var assetsList = _assetsBatch.Take(assetsAvailable).ToList();
             
             _assetsRepositoryMock.Setup(o => o.GetAllAvailableAssets())

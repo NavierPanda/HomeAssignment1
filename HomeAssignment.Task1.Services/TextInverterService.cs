@@ -31,8 +31,7 @@ namespace HomeAssignment.Task1.Services
                 // the previous word (word between 
                 // the indexes start and end - 1 
                 // i.e., s[start..end-1]
-                if (charArray[end] == ' ')
-                    //|| charArray[end] == ',' || charArray[end] == '.')
+                if (Char.IsWhiteSpace(charArray[end]))
                 {
                     Array.Reverse(charArray, start, end-start);
                     start = end + 1;

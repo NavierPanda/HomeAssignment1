@@ -39,10 +39,9 @@ namespace HomeAssignment.Task3.Services.Tests
         public void When_ValidUrlWithStream_ReturnsStream()
         {
             string fileUrl = "https://speed.hetzner.de/100MB.bin";
-            var stream = _shaCalculator.GetFileStream(fileUrl);
+            using var stream = _shaCalculator.GetFileStream(fileUrl);
             stream.Should().NotBeNull();
             stream.CanRead.Should().BeTrue();
-            stream.Dispose();
         }
     }
 }

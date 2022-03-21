@@ -3,7 +3,7 @@
 namespace HomeAssignment.Task3.Contracts
 {
     /// <summary>
-    /// Calculate Calculate a SHA hash (in hex form)
+    /// Calculate a SHA hash (in hex form)
     /// </summary>
     public interface ISHACalculator
     {

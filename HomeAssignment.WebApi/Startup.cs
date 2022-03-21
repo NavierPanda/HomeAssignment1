@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
 
 #pragma warning disable 1591
 namespace HomeAssignment.WebApi
@@ -31,7 +32,7 @@ namespace HomeAssignment.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                .AddNewtonsoftJson();
+                .AddNewtonsoftJson(options=> options.SerializerSettings.Converters.Add(new StringEnumConverter()));;
 
             services.AddOptions();
 
